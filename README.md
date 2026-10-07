@@ -34,7 +34,7 @@ Baza danych musi gromadzić i przetwarzać informacje dotyczące:
 
 * Rejestracja klientów, zapisane adresy (dom, praca itp.) oraz zarządzanie kontami pracowników, moderatorów i administratorów.
 
-* Składanie zamówień abonamentowych i jednorazowych, harmonogramowanie dostaw dzień po dniu.
+* Składanie zamówień jednorazowych, harmonogramowanie dostaw dzień po dniu.
 
 * Zapisywanie informacji o płątności (paragon, faktura vat, faktura imienna, kwota płatności)
 
@@ -63,8 +63,6 @@ System wymusza uwierzytelnianie użytkowników (login/e-mail + zahashowane haslo
    * Wyszukiwanie, filtrowanie i porównywanie ofert cateringowych.
 
    * Składanie zamówień, wybór okna dostawy, płatność i wybór dokumentu sprzedaży (faktura/paragon).
-
-   * Wstrzymywanie dostaw w wybrane dni (funkcja urlopu) w ramach trwającego abonamentu.
 
    * Wystawianie ocen i komentarzy po zrealizowanej dostawie oraz zgłaszanie reklamacji.
 
@@ -104,16 +102,29 @@ System wymusza uwierzytelnianie użytkowników (login/e-mail + zahashowane haslo
 
 * Klient może zdefiniować wiele adresów doręczeń, ale tylko jeden może być oznaczony jako domyślny.
 
+* Klient musi mieć przypisany do konta dokładnie jeden, unikalny numer telefonu
+
 ### Oferta i menu
 
 * Każdy posiłek musi mieć przypisane: unikalną nazwę, opis, gramaturę, listę składników, listę alergenów oraz tabelę wartości odżywczych.
+
+* Każdy posiłek musi mieć określony zakres pór dnia (np. śniadanie, obiad, kolacja) do których jest przypisywalny; 
+
 * Dieta składa się z określonej liczby posiłków dziennie (np. 3, 5 lub 6 posiłków) i może być oferowana w zdefiniowanych wariantach kalorycznych.
+
+* Dieta zawiera listę pór dnia, na które przewiduje posiłki
+
+* Plan zywieniowy na dany dzien określa klientowi dokładnie jeden posiłek na kazdą porę dnia
 
 * Firma może modyfikować menu z wyprzedzeniem; zmiany w posiłkach na dany dzień zostają zablokowane na 24 godziny przed planowaną dostawą.
 
+* Jeden posiłek może być częścią wielu diet, a dieta może składać się z wielu posiłków
+
 ### Zamówienia i płatności
 
-* Zamówienie musi określać: firmę cateringową, rodzaj diety, kaloryczność, datę rozpoczęcia i zakończenia, adres oraz okno czasowe doręczenia
+* Jedna płatność dotyczy wyłącznie jednego zamówienia
+
+* Zamówienie musi określać: firmę cateringową, rodzaj diety, kaloryczność, wybrane dni w których realizowana jest dieta, adres oraz okno czasowe doręczenia
 
 * Każde zamówienie generuje dokładnie jeden rekord rozliczeniowy: paragon fiskalny, fakturę vat, faktura imienna (B2C), kwota płatności.
 
@@ -123,7 +134,7 @@ System wymusza uwierzytelnianie użytkowników (login/e-mail + zahashowane haslo
 
 * Złożenie zamówienia z dostawą pod konkretny adres jest możliwe wyłącznie, gdy kod pocztowy tego adresu mieści się w puli kodów pocztowych obsługiwanych przez wybraną firmę cateringową.
 
-* Każdy dzień trwania zamówienia abonamentowego traktowany jest jako osobna zaplanowana realizacja dostawy.
+* Każdy dzień trwania zamówienia traktowany jest jako osobna zaplanowana realizacja dostawy.
 
 ### Oceny 
 
