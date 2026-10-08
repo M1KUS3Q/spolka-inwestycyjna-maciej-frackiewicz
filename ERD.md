@@ -4,7 +4,7 @@
 
 ```mermaid
 erDiagram
-    Uzytkownik }o--o{ Uprawnienia : "posiada"
+    Uzytkownik }o--o{ Uprawnienie : "posiada"
     Uzytkownik ||--o{ AdresDostawy : "okresla"
     Uzytkownik ||--o{ DaneFakturowe : "posiada"
     Uzytkownik ||--o{ Zamowienie : "sklada"
@@ -14,24 +14,26 @@ erDiagram
     FirmaCateringowa }o--o{ KodPocztowy : "obsluguje"
     FirmaCateringowa ||--o{ Dieta : "oferuje"
     FirmaCateringowa ||--o{ OknoDostawy : "okresla"
+    FirmaCateringowa ||--o{ Ocena : "otrzymuje"
 
     Dieta ||--o{ WariantKaloryczny : "zawiera"
     Dieta }o--o{ PoraDnia : "obejmuje"
     
-    WariantKaloryczny ||--o{ Cennik : "okresla cene"
-    WariantKaloryczny ||--o{ PlanZywieniowy : "okresla"
+    WariantKaloryczny ||--o{ Cennik : "posiada określony"
+    WariantKaloryczny ||--o{ PlanDnia : "okresla"
     WariantKaloryczny ||--o{ Zamowienie : "wybiera"
 
     Posilek }o--o{ PoraDnia : "przeznaczony na"
     Posilek }o--o{ Skladnik : "zawiera"
     Posilek }o--o{ Alergen : "zawiera"
-    Posilek ||--o{ WartoscOdzywcza : "posiada"
     Posilek ||--o{ Ocena : "otrzymuje"
 
-    PlanZywieniowy }o--|| Posilek : "zawiera"
-    PlanZywieniowy }o--|| PoraDnia : "przypisany do"
+    PlanDnia ||--|{ PozycjaPlanu : "zawiera"
+    PozycjaPlanu }o--|| PoraDnia : "przypisana do"
+    PozycjaPlanu }o--|| Posilek : "serwuje"
 
     AdresDostawy ||--o{ Zamowienie : "dotyczy"
+    AdresDostawy ||--|| KodPocztowy : "posiada"
     OknoDostawy ||--o{ Zamowienie : "wybrane okno"
 
     Zamowienie ||--|| Rozliczenie : "generuje"
@@ -40,7 +42,8 @@ erDiagram
 
     DaneFakturowe ||--o{ Rozliczenie : "widnieje na"
 
-    Posilek }o--|| Doreczenie : "dorecza"
-    Doreczenie ||--o{ Reklamacja : "dotyczy"
+    Doreczenie }o--|{ PlanDnia : "realizuje"
+    Doreczenie |o--o| Reklamacja : "dotyczy"
+    Doreczenie ||--o{ Ocena : "dotyczy"
 ```
 
