@@ -78,9 +78,9 @@ System wymusza uwierzytelnianie użytkowników (login/e-mail + zahashowane haslo
 
    * Definiowanie obsługiwanych zakresów kodów pocztowych.
 
-3. **Moderator opinii**:
+3. **Moderator**:
 
-   * Przeglądanie nowo dodanych opinii i komentarzy wystawianych przez klientów.
+   * Przeglądanie opinii i komentarzy wystawianych przez klientów.
 
    * Ukrywanie lub usuwanie komentarzy naruszających regulamin platformy.
 
