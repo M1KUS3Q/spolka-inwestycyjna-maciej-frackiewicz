@@ -18,13 +18,13 @@ erDiagram
 
     Dieta ||--o{ WariantKaloryczny : "zawiera"
     Dieta }o--o{ PoraDnia : "obejmuje"
-    
+
     WariantKaloryczny ||--o{ Cennik : "posiada określony"
     WariantKaloryczny ||--o{ PlanDnia : "okresla"
     WariantKaloryczny ||--o{ Zamowienie : "wybiera"
 
-    Posilek }o--o{ PoraDnia : "przeznaczony na"
-    Posilek }o--o{ Skladnik : "zawiera"
+    Posilek }o--|{ PoraDnia : "przeznaczony na"
+    Posilek }o--|{ Skladnik : "zawiera"
     Posilek }o--o{ Alergen : "zawiera"
     Posilek ||--o{ Ocena : "otrzymuje"
 
