@@ -20,15 +20,13 @@ erDiagram
     Dieta ||--o{ WariantKaloryczny : "zawiera"
     Dieta }o--|{ PoraDnia : "obejmuje"
 
-    WariantKaloryczny ||--o{ Cennik : "posiada określony"
-
     PozycjaZamowienia }o--|| WariantKaloryczny : "wybiera"
     PozycjaZamowienia ||--|{ PlanDnia : "ma dni dostaw"
 
     Posilek }o--|{ PoraDnia : "przeznaczony na"
     Posilek }o--|{ Skladnik : "zawiera"
     Posilek }o--o{ Alergen : "zawiera"
-    Posilek ||--o{ Ocena : "otrzymuje"
+    Posilek |o--o{ Ocena : "otrzymuje"
 
     PlanDnia ||--|{ PozycjaPlanu : "zawiera"
     PozycjaPlanu }o--|| PoraDnia : "przypisana do"
@@ -47,7 +45,7 @@ erDiagram
 
     Doreczenie }o--|{ PlanDnia : "realizuje"
     Doreczenie |o--o| Reklamacja : "dotyczy"
-    Doreczenie ||--o{ Ocena : "dotyczy"
+    Doreczenie |o--o{ Ocena : "dotyczy"
 ```
 
 ## Uwagi do modelu
