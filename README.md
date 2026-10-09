@@ -114,7 +114,7 @@ System wymusza uwierzytelnianie użytkowników (login/e-mail + zahashowane haslo
 
 * Dieta zawiera listę pór dnia, na które przewiduje posiłki
 
-* Plan zywieniowy na dany dzien określa klientowi dokładnie jeden posiłek na kazdą porę dnia
+* Plan zywieniowy na dany dzien określa klientowi dokładnie jeden posiłek na kazdą porę dnia (wymuszane unikalnością pary: plan dnia, pora dnia)
 
 * Firma może modyfikować menu z wyprzedzeniem; zmiany w posiłkach na dany dzień zostają zablokowane na 24 godziny przed planowaną dostawą.
 
@@ -122,9 +122,9 @@ System wymusza uwierzytelnianie użytkowników (login/e-mail + zahashowane haslo
 
 ### Zamówienia i płatności
 
-* Jedna płatność dotyczy wyłącznie jednego zamówienia
+* Jedna płatność dotyczy wyłącznie jednego zamówienia.
 
-* Zamówienie musi określać: firmę cateringową, rodzaj diety, kaloryczność, wybrane dni w których realizowana jest dieta, adres oraz okno czasowe doręczenia
+* Zamówienie jako całość określa firmę cateringową, adres oraz okno czasowe doręczenia; składa się z jednej lub więcej pozycji, a każda pozycja określa wariant kaloryczny (rodzaj diety i kaloryczność) oraz własny zestaw dni, w których jest realizowana. **Wyboru okna czasowego klient dokonuje ze sztywnej puli okien zdefiniowanych przez wybraną firmę cateringową.**
 
 * Każde zamówienie generuje dokładnie jeden rekord rozliczeniowy: paragon fiskalny, fakturę vat, faktura imienna (B2C), kwota płatności.
 
@@ -134,8 +134,10 @@ System wymusza uwierzytelnianie użytkowników (login/e-mail + zahashowane haslo
 
 * Złożenie zamówienia z dostawą pod konkretny adres jest możliwe wyłącznie, gdy kod pocztowy tego adresu mieści się w puli kodów pocztowych obsługiwanych przez wybraną firmę cateringową.
 
-* Każdy dzień trwania zamówienia traktowany jest jako osobna zaplanowana realizacja dostawy.
+* **Jedno fizyczne doręczenie przez kuriera może realizować plany żywieniowe na więcej niż jeden dzień (np. z góry na cały weekend) lub obejmować paczki dla wielu domowników realizowane w ramach tego samego zamówienia.**
 
-### Oceny 
+### Reklamacje i Oceny 
+
+* **Klient może zgłosić wiele reklamacji w ramach trwania całego zamówienia, jednak pojedyncze fizyczne doręczenie (paczka z danego dnia) może być przedmiotem co najwyżej jednej, zbiorczej reklamacji.**
 
 * Klient może ocenić danie lub firmę (skala 1–5 gwiazdek + opcjonalny komentarz) wyłącznie po dacie planowanej dostawy powiązanej z danym posiłkiem.
