@@ -4,55 +4,55 @@
 
 ```mermaid
 erDiagram
-    Uzytkownik }o--o{ Uprawnienie : "posiada"
-    Uzytkownik ||--o{ AdresDostawy : "okresla"
-    Uzytkownik ||--o{ DaneFakturowe : "posiada"
-    Uzytkownik ||--o{ Zamowienie : "sklada"
-    Uzytkownik ||--o{ Ocena : "wystawia"
-    Uzytkownik ||--o{ Reklamacja : "zglasza"
-    Uzytkownik }o--o| FirmaCateringowa : "pracuje w"
+    User }o--o{ Permission : "has"
+    User ||--o{ DeliveryAddress : "specifies"
+    User ||--o{ BillingData : "has"
+    User ||--o{ Order : "places"
+    User ||--o{ Review : "submits"
+    User ||--o{ Complaint : "submits"
+    User }o--o| CateringCompany : "works at"
 
-    FirmaCateringowa }o--o{ KodPocztowy : "obsluguje"
-    FirmaCateringowa ||--o{ Dieta : "oferuje"
-    FirmaCateringowa ||--o{ OknoDostawy : "okresla"
-    FirmaCateringowa ||--o{ Ocena : "otrzymuje"
+    CateringCompany }o--o{ PostalCode : "services"
+    CateringCompany ||--o{ Diet : "offers"
+    CateringCompany ||--o{ DeliveryWindow : "specifies"
+    CateringCompany ||--o{ Review : "receives"
 
-    Dieta ||--o{ WariantKaloryczny : "zawiera"
-    Dieta }o--|{ PoraDnia : "obejmuje"
+    Diet ||--o{ CaloricVariant : "contains"
+    Diet }o--|{ Mealtime : "includes"
 
-    PozycjaZamowienia }o--|| WariantKaloryczny : "wybiera"
-    PozycjaZamowienia ||--|{ PlanDnia : "ma dni dostaw"
+    OrderItem }o--|| CaloricVariant : "selects"
+    OrderItem ||--|{ DailyPlan : "has delivery days"
 
-    Posilek }o--|{ PoraDnia : "przeznaczony na"
-    Posilek }o--|{ Skladnik : "zawiera"
-    Posilek }o--o{ Alergen : "zawiera"
-    Posilek |o--o{ Ocena : "otrzymuje"
+    Meal }o--|{ Mealtime : "intended for"
+    Meal }o--|{ Ingredient : "contains"
+    Meal }o--o{ Allergen : "contains"
+    Meal |o--o{ Review : "receives"
 
-    PlanDnia ||--|{ PozycjaPlanu : "zawiera"
-    PozycjaPlanu }o--|| PoraDnia : "przypisana do"
-    PozycjaPlanu }o--|| Posilek : "serwuje"
+    DailyPlan ||--|{ PlanItem : "contains"
+    PlanItem }o--|| Mealtime : "assigned to"
+    PlanItem }o--|| Meal : "serves"
 
-    AdresDostawy ||--o{ Zamowienie : "dotyczy"
-    AdresDostawy }o--|| KodPocztowy : "posiada"
-    OknoDostawy ||--o{ Zamowienie : "wybrane okno"
+    DeliveryAddress ||--o{ Order : "applies to"
+    DeliveryAddress }o--|| PostalCode : "has"
+    DeliveryWindow ||--o{ Order : "selected window"
 
-    Zamowienie ||--|{ PozycjaZamowienia : "zawiera pozycje"
-    Zamowienie ||--|| Rozliczenie : "generuje"
-    Zamowienie ||--|{ Doreczenie : "składa się z"
-    Zamowienie ||--o{ Reklamacja : "dotyczy"
+    Order ||--|{ OrderItem : "contains items"
+    Order ||--|| Billing : "generates"
+    Order ||--|{ Delivery : "consists of"
+    Order ||--o{ Complaint : "applies to"
 
-    DaneFakturowe |o--o{ Rozliczenie : "widnieje na"
+    BillingData |o--o{ Billing : "appears on"
 
-    Doreczenie }o--|{ PlanDnia : "realizuje"
-    Doreczenie |o--o| Reklamacja : "dotyczy"
-    Doreczenie |o--o{ Ocena : "dotyczy"
+    Delivery }o--|{ DailyPlan : "fulfills"
+    Delivery |o--o| Complaint : "applies to"
+    Delivery |o--o{ Review : "applies to"
 ```
 
 ## Uwagi do modelu
 
-* `PozycjaZamowienia` reprezentuje jedną pozycję zamówienia, czyli dietę jednego domownika w ramach zamówienia. Atrybuty: `domownik` (etykieta, np. „Tata"), opcjonalnie `ilosc` (gdy kilka osób bierze ten sam wariant i te same dni).
+* `OrderItem` reprezentuje jedną pozycję zamówienia, czyli dietę jednego domownika w ramach zamówienia. Atrybuty: `recipient` (etykieta, np. „Tata"), opcjonalnie `quantity` (gdy kilka osób bierze ten sam wariant i te same dni).
 
-* `PlanDnia` to konkretny plan dnia z atrybutem `data` (dni wybrane przez danego domownika). Fizyczne doręczenie (`Doreczenie`) może realizować wiele planów z różnych dni i różnych domowników.
+* `DailyPlan` to konkretny plan dnia z atrybutem `date` (dni wybrane przez danego domownika). Fizyczne doręczenie (`Delivery`) może realizować wiele planów z różnych dni i różnych domowników.
 
-* „Dokładnie jeden posiłek na porę dnia" wymusza unikalność pary (PlanDnia, PoraDnia) w `PozycjaPlanu` — niewyrażalne w diagramie ERD.
+* „Dokładnie jeden posiłek na porę dnia" wymusza unikalność pary (DailyPlan, Mealtime) w `PlanItem` — niewyrażalne w diagramie ERD.
 
