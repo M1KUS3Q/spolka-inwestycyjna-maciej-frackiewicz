@@ -47,7 +47,7 @@ erDiagram
         INT postal_code_id FK "NOT NULL"
         VARCHAR buyer_type "NOT NULL"
         VARCHAR company_name "NULL"
-        CHAR nip "NULL"
+        VARCHAR nip "NULL"
         VARCHAR first_name "NULL"
         VARCHAR last_name "NULL"
         VARCHAR city "NOT NULL"
@@ -59,7 +59,7 @@ erDiagram
     CateringCompany {
         BIGINT id PK
         VARCHAR name "NOT NULL, UNIQUE"
-        CHAR nip "NOT NULL, UNIQUE"
+        VARCHAR nip "NOT NULL, UNIQUE"
         VARCHAR regon "NOT NULL, UNIQUE"
         TEXT description "NULL"
         VARCHAR contact_email "NOT NULL"
@@ -70,7 +70,7 @@ erDiagram
 
     PostalCode {
         INT id PK
-        CHAR code "NOT NULL, UNIQUE"
+        VARCHAR code "NOT NULL, UNIQUE"
     }
 
     CateringCompanyPostalCode {
