@@ -5,10 +5,14 @@ PRAGMA foreign_keys = ON;
 -- ale dlatego, ze traktowalem te rekordy jako do archiwizacji, a nie usuwania. 
 -- jesli jednak umozliwiamy usuwanie, to dobrze by bylo zmienic w przyszlosci
 
+
+CREATE DOMAIN postal_code AS CHAR(6)
+    CHECK (VALUE GLOB '[0-9][0-9]-[0-9][0-9][0-9]');
+
+
 CREATE TABLE PostalCode (
     id INTEGER PRIMARY KEY,
-    code CHAR(6) NOT NULL UNIQUE,
-    CONSTRAINT chk_postal_code_format CHECK (code GLOB '[0-9][0-9]-[0-9][0-9][0-9]')
+    code postal_code NOT NULL UNIQUE
 );
 
 CREATE TABLE CateringCompany (
