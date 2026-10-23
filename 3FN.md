@@ -70,7 +70,7 @@ erDiagram
 
     PostalCode {
         INT id PK
-        CHAR code "NOT NULL, UNIQUE"
+        VARCHAR code "NOT NULL, UNIQUE"
     }
 
     CateringCompanyPostalCode {
