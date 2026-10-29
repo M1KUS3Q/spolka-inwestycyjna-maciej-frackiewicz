@@ -486,6 +486,9 @@ def seed_database():
         ("Niski IG", "Dieta o niskim indeksie glikemicznym wspierająca gospodarkę cukrową."),
     ]
 
+    company_to_variants = {i + 1: [] for i in range(CONFIG["NUM_COMPANIES"])}
+    pc_to_companies = {}
+
     for i in range(CONFIG["NUM_COMPANIES"]):
         cid = i + 1
         companies.append(
@@ -510,6 +513,7 @@ def seed_database():
             company_PostalCodes.append(
                 CateringCompanyPostalCode(catering_company_id=cid, postal_code_id=pc.id)
             )
+            pc_to_companies.setdefault(pc.id, []).append(cid)
 
         # Okna dostaw (start_time < end_time)
         windows_slots = [
@@ -543,15 +547,16 @@ def seed_database():
             )
             for cal in [1500, 1800, 2000, 2500]:
                 price = Decimal(str(round(55.0 + (cal / 100.0) * 1.8 + random.uniform(-5, 8), 2)))
-                caloric_variants.append(
-                    CaloricVariant(
-                        id=cv_id,
-                        diet_id=diet_id,
-                        calories=cal,
-                        base_price_per_day=price,
-                    )
+                variant_obj = CaloricVariant(
+                    id=cv_id,
+                    diet_id=diet_id,
+                    calories=cal,
+                    base_price_per_day=price,
                 )
+                caloric_variants.append(variant_obj)
                 variant_to_company[cv_id] = cid
+
+                company_to_variants[cid].append(variant_obj)
 
                 # Przypisanie pór posiłków do wariantu (np. 4 lub 5 posiłków dziennie)
                 active_mts = [1, 2, 3, 4, 5] if cal >= 1800 else [1, 3, 4, 5]
@@ -659,6 +664,9 @@ def seed_database():
     user_to_billing_data = {}
     moderator_ids = []
 
+    address_to_pc = {}
+    serviced_pc_ids = list(pc_to_companies.keys())
+
     for i in range(CONFIG["NUM_USERS"]):
         uid = i + 1
         fname = fake.first_name()
@@ -694,7 +702,8 @@ def seed_database():
         num_addrs = random.randint(1, 2)
         user_to_addresses[uid] = []
         for a_idx in range(num_addrs):
-            pc = random.choice(postal_codes)
+            pc_id = random.choice(serviced_pc_ids)
+            address_to_pc[addr_id] = pc_id
             delivery_addresses.append(
                 DeliveryAddress(
                     id=addr_id,
@@ -782,9 +791,9 @@ def seed_database():
         uid = random.randint(1, CONFIG["NUM_USERS"])
         u_addr_id = random.choice(user_to_addresses[uid])
 
-        # Wybieramy główny wariant kaloryczny i powiązaną z nim firmę cateringową
-        first_variant = random.choice(all_variants)
-        cid = variant_to_company[first_variant.id]
+        addr_pc_id = address_to_pc[u_addr_id]
+        cid = random.choice(pc_to_companies[addr_pc_id])
+
         dw_chosen = random.choice(company_to_windows[cid])
 
         order_created = fake.date_time_between(start_date="-2y", end_date="-10d")
@@ -842,8 +851,10 @@ def seed_database():
         num_items = random.choices([1, 2], weights=[70, 30])[0]
         total_order_amount = Decimal("0.00")
 
+        available_company_variants = company_to_variants[cid]
+
         for item_idx in range(num_items):
-            cv = first_variant if item_idx == 0 else random.choice(all_variants)
+            cv = random.choice(available_company_variants)
             qty = random.choices([1, 2], weights=[85, 15])[0]
             price_snap = cv.base_price_per_day
 
