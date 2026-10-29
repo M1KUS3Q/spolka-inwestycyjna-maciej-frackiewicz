@@ -317,7 +317,6 @@ def init_db_from_sql(engine, sql_path: str):
         with open(sql_path, "r", encoding="utf-8") as f:
             sql_script = f.read()
 
-        # SQLite nie wspiera CREATE DOMAIN - zamieniamy na bezpośredni CHECK w tabeli PostalCode
         sql_script = re.sub(
             r"CREATE\s+DOMAIN\s+postal_code\s+AS\s+CHAR\(6\)\s+CHECK\s*\(\s*VALUE\s+GLOB\s+'\[0-9\]\[0-9\]-\[0-9\]\[0-9\]\[0-9\]'\s*\)\s*;",
             "",
@@ -364,7 +363,6 @@ def seed_database():
 
     engine = create_engine(f"sqlite:///{DB_FILENAME}", echo=False)
 
-    # Włączenie sprawdzania kluczy obcych w SQLite dla każdego połączenia
     @event.listens_for(engine, "connect")
     def set_sqlite_pragma(dbapi_connection, connection_record):
         cursor = dbapi_connection.cursor()
@@ -377,7 +375,7 @@ def seed_database():
     Session = sessionmaker(bind=engine)
     session = Session()
 
-    # A. TABELE SŁOWNIKOWE (wprowadzane ręcznie / kontrolowanie)
+    # A. TABELE SŁOWNIKOWE
     print("2. Wypełnianie tabel słownikowych (Permission, Mealtime, Allergen, Ingredient)...")
 
     permissions_data = [
@@ -507,7 +505,6 @@ def seed_database():
             )
         )
 
-        # Obsługiwane kody pocztowe przez firmę
         sampled_pcs = random.sample(postal_codes, k=random.randint(30, 80))
         for pc in sampled_pcs:
             company_PostalCodes.append(
@@ -767,7 +764,7 @@ def seed_database():
 
     # E. ZAMÓWIENIA, POZYCJE, PLANY DZIENNE, DOSTAWY I ROZLICZENIA (WYSOKI WOLUMEN)
 
-    print("6. Generowanie zamówień, planów dziennych, dostaw i płatności (kilkadziesiąt tysięcy rekordów)...")
+    print("6. Generowanie zamówień, planów dziennych, dostaw i płatności")
 
     orders = []
     order_items = []
@@ -782,7 +779,6 @@ def seed_database():
     deliv_id = 1
     bill_id = 1
 
-    # Przechowujemy metadane o dostawach do późniejszego generowania spójnych opinii i reklamacji
     delivery_meta = []  # krotki: (delivery_id, order_id, user_id, company_id, created_at)
     all_variants = list(caloric_variants)
 
@@ -816,7 +812,6 @@ def seed_database():
         num_days = random.randint(CONFIG["DAYS_PER_ORDER_MIN"], CONFIG["DAYS_PER_ORDER_MAX"])
         start_date = (order_created + timedelta(days=2)).date()
 
-        # Tworzymy rekordy Delivery dla każdego dnia zamówienia
         date_to_delivery_id = {}
         for d_offset in range(num_days):
             sched_date = start_date + timedelta(days=d_offset)
@@ -885,7 +880,6 @@ def seed_database():
                     )
                 )
 
-                # Powiązanie dostawy z planem dziennym
                 delivery_daily_plans.append(
                     DeliveryDailyPlan(
                         delivery_id=date_to_delivery_id[plan_date],
@@ -893,7 +887,6 @@ def seed_database():
                     )
                 )
 
-                # Wybór posiłków na każdą porę dnia (PlanItem)
                 for mt_id in active_mealtimes:
                     chosen_meal_id = random.choice(mealtime_to_meals[mt_id])
                     plan_items.append(
@@ -907,7 +900,6 @@ def seed_database():
                 dp_id += 1
             oi_id += 1
 
-        # Rozliczenie (Billing) dla zamówienia
         bdata_id_user, b_type = user_to_billing_data[uid]
         doc_type = "INVOICE" if b_type == "COMPANY" else "RECEIPT"
         is_paid = order_status in ("PAID", "IN_PROGRESS", "COMPLETED")
