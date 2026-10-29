@@ -707,7 +707,7 @@ def seed_database():
             delivery_addresses.append(
                 DeliveryAddress(
                     id=addr_id,
-                    postal_code_id=pc.id,
+                    postal_code_id=pc_id,
                     city=fake.city(),
                     street=fake.street_name(),
                     building_number=str(random.randint(1, 150)),
