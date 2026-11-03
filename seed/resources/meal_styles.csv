@@ -1,0 +1,27 @@
+mealtime,style,categories
+Śniadanie,Owsianka,carb;fruit;fat
+Śniadanie,Jajecznica,egg;vegetable;carb
+Śniadanie,Kanapki,carb;cheese;vegetable
+Śniadanie,Koktajl,fruit;dairy;fat
+Śniadanie,Omlet,egg;cheese;vegetable
+II Śniadanie,Jogurt,fruit;dairy
+II Śniadanie,Sałatka owocowa,fruit;fruit;fat
+II Śniadanie,Twarożek,cheese;vegetable
+II Śniadanie,Przekąska,vegetable;fat
+Obiad,Bowl,protein;carb;vegetable
+Obiad,Curry,protein;carb;vegetable
+Obiad,Risotto,carb;protein;vegetable
+Obiad,Pieczone danie,protein;carb;vegetable;herb
+Obiad,Gulasz,protein;vegetable;carb
+Obiad,Curry roślinne,legume;carb;vegetable
+Obiad,Sałatka,protein;vegetable;fat
+Obiad,Stir-fry,protein;vegetable;fat
+Podwieczorek,Koktajl,fruit;dairy
+Podwieczorek,Deser,fruit;dairy;sweet
+Podwieczorek,Przekąska,vegetable;cheese
+Podwieczorek,Hummus,legume;vegetable
+Kolacja,Sałatka,protein;vegetable;fat
+Kolacja,Zapiekanka,vegetable;cheese;carb
+Kolacja,Tortilla,protein;vegetable;carb
+Kolacja,Owsianka,carb;fruit;fat
+Kolacja,Bowl,legume;vegetable;fat

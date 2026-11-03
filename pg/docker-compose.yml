@@ -1,0 +1,23 @@
+name: catering
+
+services:
+  db:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: catering
+      POSTGRES_USER: catering
+      POSTGRES_PASSWORD: catering
+    ports:
+      - "5432:5432"
+    volumes:
+      - data:/var/lib/postgresql/data
+      - ./createdb.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U catering -d catering"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+
+volumes:
+  data:

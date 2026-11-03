@@ -1,2 +1,6 @@
 # .gitignore
 .idea
+
+# Python environment used by seed/seed_database.py
+.venv/
+__pycache__/

@@ -1,0 +1,7 @@
+code,name,description
+CLIENT,Klient,"Składanie zamówień, wybór posiłków i zarządzanie kontem"
+COMPANY_OWNER,Właściciel cateringu,"Pełne zarządzanie ofertą i konfiguracją firmy cateringowej"
+COMPANY_STAFF,Pracownik cateringu,"Obsługa zamówień, diet oraz harmonogramu dostaw"
+COURIER,Kurier,"Realizacja dostaw i zmiana ich statusów"
+MODERATOR,Moderator,"Moderacja opinii oraz obsługa zgłoszeń reklamacyjnych"
+ADMIN,Administrator systemu,Pełne uprawnienia administracyjne w systemie
