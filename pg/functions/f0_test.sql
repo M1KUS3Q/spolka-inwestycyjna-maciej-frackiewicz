@@ -7,13 +7,13 @@ RETURNS TABLE (
 BEGIN
     RETURN QUERY
     SELECT 
-        cc.id,
-        cc.name,
-        cc.description
+        company.id,
+        company.name,
+        company.description
     FROM 
-        "CateringCompany" cc
+        "CateringCompany" company
     WHERE 
-        cc.name ILIKE '%' || search_query || '%'
-        OR cc.description ILIKE '%' || search_query || '%';
+        company.name ILIKE '%' || search_query || '%'
+        OR company.description ILIKE '%' || search_query || '%';
 END;
 $$ LANGUAGE plpgsql;
