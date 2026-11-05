@@ -110,8 +110,17 @@ def unique_phone(used: set[str]) -> str:
 def seed() -> None:
     dsn = os.getenv("DATABASE_URL", "postgresql://catering:catering@localhost:5432/catering")
     with psycopg.connect(dsn) as conn, conn.cursor() as cur:
-        cur.execute("DROP SCHEMA public CASCADE; CREATE SCHEMA public;")
-        cur.execute(SCHEMA.read_text(encoding="utf-8"))
+        cur.execute("""
+        DO $$
+        DECLARE tbls text;
+        BEGIN
+        SELECT string_agg(format('%I', tablename), ', ') INTO tbls
+        FROM pg_tables WHERE schemaname = 'public';
+        IF tbls IS NOT NULL THEN
+            EXECUTE 'TRUNCATE TABLE ' || tbls || ' RESTART IDENTITY CASCADE';
+        END IF;
+        END $$;
+        """)
 
         permission_ids = dict(zip(
             [p["code"] for p in PERMISSIONS],
