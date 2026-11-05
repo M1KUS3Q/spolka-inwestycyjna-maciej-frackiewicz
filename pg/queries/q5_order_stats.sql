@@ -1,6 +1,7 @@
 SELECT
     company_id,
     company_name,
+    order_count,
 
     completed_count,
     ROUND(100.0 * completed_count / NULLIF(order_count, 0), 2) AS completed_percent,
@@ -25,18 +26,24 @@ FROM (
         company.id AS company_id,
         company.name AS company_name,
 
-        COUNT(*) AS order_count,
-        COUNT(*) FILTER (WHERE order_.status = 'COMPLETED') AS completed_count,
-        COUNT(*) FILTER (WHERE order_.status = 'NEW') AS new_count,
-        COUNT(*) FILTER (WHERE order_.status = 'IN_PROGRESS') AS in_progress_count,
-        COUNT(*) FILTER (WHERE order_.status = 'CONFIRMED') AS confirmed_count,
-        COUNT(*) FILTER (WHERE order_.status = 'PAID') AS paid_count,
-        COUNT(*) FILTER (WHERE order_.status = 'CANCELLED') AS cancelled_count
+        COUNT(order_.id) AS order_count,
+        COUNT(order_.id) FILTER (WHERE order_.status = 'COMPLETED') AS completed_count,
+        COUNT(order_.id) FILTER (WHERE order_.status = 'NEW') AS new_count,
+        COUNT(order_.id) FILTER (WHERE order_.status = 'IN_PROGRESS') AS in_progress_count,
+        COUNT(order_.id) FILTER (WHERE order_.status = 'CONFIRMED') AS confirmed_count,
+        COUNT(order_.id) FILTER (WHERE order_.status = 'PAID') AS paid_count,
+        COUNT(order_.id) FILTER (WHERE order_.status = 'CANCELLED') AS cancelled_count
     FROM 
-        "Order" order_
-        INNER JOIN "DeliveryWindow" window ON window.id = order_.delivery_window_id
-        INNER JOIN "CateringCompany" company ON company.id = window.catering_company_id
+        "CateringCompany" company
+        LEFT JOIN "DeliveryWindow" window_ ON window_.catering_company_id = company.id
+        LEFT JOIN "Order" order_ ON order_.delivery_window_id = window_.id
     GROUP BY 
         company.id, 
         company.name
+    ORDER BY
+        company.id
 ) AS stats;
+
+
+
+
