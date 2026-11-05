@@ -42,7 +42,7 @@ FROM (
         company.name
     ORDER BY
         company.id
-) AS stats;
+) AS stats_;
 
 
 
