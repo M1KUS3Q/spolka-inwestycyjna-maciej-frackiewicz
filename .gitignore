@@ -4,3 +4,7 @@
 # Python environment used by seed/seed_database.py
 .venv/
 __pycache__/
+
+# Python poetry files
+poetry.lock
+pyproject.toml
