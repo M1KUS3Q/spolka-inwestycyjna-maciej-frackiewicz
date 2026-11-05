@@ -55,11 +55,12 @@ Zestawienie posiłków przypisanych do poszczególnych pór dnia, takich jak śn
 
 Agregacje: `COUNT`, `AVG`, `MIN`, `MAX`, `PERCENTILE_CONT`.
 
-9\. Wyszukiwanie posiłków o nietypowej gęstości energetycznej
+9\. Ranking posiłków o najlepszym profilu odżywczym względem kalorii
 
-Analiza kaloryczności posiłków z uwzględnieniem ich masy. Dla każdego posiłku należy obliczyć kaloryczność w przeliczeniu na 100 gramów, a następnie porównać ją ze średnią i odchyleniem standardowym dla posiłków przypisanych do tej samej pory dnia. Wyniki powinny wskazywać posiłki o wyjątkowo wysokiej lub niskiej gęstości energetycznej.
+Zestawienie posiłków przypisanych do poszczególnych pór dnia pod kątem ich wartości odżywczej w przeliczeniu na 100 kcal. Dla każdego posiłku należy obliczyć zawartość białka, błonnika i soli na 100 kcal oraz udział energii pochodzącej z białka, a następnie uszeregować posiłki w obrębie tej samej pory dnia według zawartości białka. Wyniki powinny wskazywać pięć posiłków o najlepszym profilu białkowym w każdej porze dnia, wraz z informacją, czy ich zawartość soli należy do najniższej, średniej czy najwyższej ćwiartki w tej porze dnia.
 
-Agregacje: `AVG`, `STDDEV_POP`, `MIN`, `MAX`. Dodatkowo można wykorzystać percentyle do wyznaczenia granic nietypowych wartości.
+Agregacje: 'COUNT' jako funkcja okna. Zamiast klasycznego grupowania kwerenda wykorzystuje funkcje okna 'RANK', 'NTILE' i 'COUNT(*) OVER', dzięki czemu każdy posiłek jest porównywany wyłącznie z posiłkami tej samej pory dnia. Posiłek przypisany do kilku pór dnia pojawia się w rankingu każdej z nich osobno, a posiłki o zerowej kaloryczności są pomijane, aby uniknąć dzielenia przez zero.
+
 
 10\. Zgodność kaloryczności jadłospisów z wybranym wariantem diety
 
