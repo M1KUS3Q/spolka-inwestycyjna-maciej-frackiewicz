@@ -24,11 +24,10 @@ Analiza kodów pocztowych, na których firma deklaruje możliwość dostarczania
 
 Agregacje: `COUNT(DISTINCT)`, `COUNT`, `SUM`. Kwerenda wymaga zestawienia zadeklarowanego obszaru działalności z kodami pocztowymi adresów dostaw.
 
-4\. Analiza zgodności dat dostaw z datą zaplanowaną
+4\. Analiza obciążenia i skuteczności okien dostaw.
 
-Porównanie daty planowanej dostawy z datą kalendarzową faktycznej dostawy. Dla każdej firmy oraz miesiąca należy obliczyć liczbę dostaw zrealizowanych, nieudanych i anulowanych, udział dostaw zrealizowanych w zaplanowanym dniu oraz średnią i medianę różnicy między datą planowaną a datą realizacji.
+Celem zapytania jest zbadanie, które przedziały godzinowe (okna dostaw) są najbardziej obciążone w poszczególnych firmach cateringowych i jak przekłada się to na skuteczność kurierów. Dla każdej firmy oraz okna dostawy należy wyświetlić: łączną liczbę zaplanowanych kursów, liczbę dostaw udanych i nieudanych. Dodatkowo kwerenda powinna obliczać wskaźnik sukcesu (procent dostaw zakończonych sukcesem), co pozwoli zidentyfikować godziny, w których najczęściej dochodzi do problemów logistycznych (np. przez poranne korki).
 
-Agregacje: `COUNT`, `AVG`, `PERCENTILE_CONT`. Ważne: schemat przechowuje datę dostawy, ale nie docelową godzinę. Kwerenda może więc badać zgodność dat kalendarzowych, a nie punktualność co do godziny.
 
 5\. Struktura statusów zamówień w poszczególnych firmach
 
