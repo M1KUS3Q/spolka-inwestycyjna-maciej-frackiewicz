@@ -122,7 +122,7 @@ Agregacje: `COUNT`, `COUNT(DISTINCT)`, `AVG`, `PERCENTILE_CONT`. Kwerenda wymaga
 
 Zestawienie liczby klientów i zamówień według miasta oraz kodu pocztowego. Dodatkowo należy obliczyć średnią liczbę zamówień przypadającą na klienta, wskazać obszary z największą liczbą klientów oraz porównać liczbę zapisanych adresów dostawy z faktyczną aktywnością zakupową w danym obszarze.
 
-Agregacje: `COUNT(DISTINCT)`, `COUNT`, `AVG`, `MAX`. Kwerenda może uwzględniać zarówno adresy dostaw, jak i dane adresowe wykorzystywane do fakturowania, ale powinny być prezentowane jako odrębne kategorie.
+Agregacje: `COUNT(DISTINCT)`, `COUNT`, `AVG`, `MAX`.
 
 20\. Aktywność moderatorów i czas obsługi opinii
 
