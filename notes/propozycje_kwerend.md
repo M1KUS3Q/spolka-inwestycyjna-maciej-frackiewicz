@@ -90,27 +90,27 @@ Agregacje: `COUNT(DISTINCT)`, `COUNT`, `FILTER`. Warto odróżnić liczbę posi�
 
 14\. Analiza reklamacji według przedmiotu i czasu rozpatrywania
 
-Zestawienie reklamacji według tematu, statusu i miesiąca zgłoszenia. Dla reklamacji rozstrzygniętych należy obliczyć średni, medianowy i maksymalny czas od zgłoszenia do rozstrzygnięcia. Dodatkowo należy wskazać liczbę reklamacji nierozpatrzonych i odsetek reklamacji zakończonych pozytywnie dla klienta lub odrzuconych.
+Zestawienie reklamacji według miesiąca zgłoszenia (format `YYYY-MM`) i tematu. Dla każdej pary miesiąc–temat podawana jest liczba wszystkich reklamacji oraz jej podział według statusu na osobne kolumny: zakończone pozytywnie dla klienta (`RESOLVED`), odrzucone (`REJECTED`) i nierozpatrzone (pozostałe statusy). Dla reklamacji z ustawionym `resolved_at` liczony jest średni, medianowy i maksymalny czas od zgłoszenia do rozstrzygnięcia, w dniach z ułamkami, żeby nie tracić dokładności w dalszych obliczeniach. Odsetki reklamacji zakończonych pozytywnie i odrzuconych liczone są względem wszystkich reklamacji danego tematu w danym miesiącu.
 
-Agregacje: `COUNT`, `AVG`, `MAX`, `PERCENTILE_CONT`, `FILTER`. Warto analizować czas rozpatrywania wyłącznie dla reklamacji, które mają ustawione `resolved_at`.
+Agregacje: `COUNT`, `AVG`, `MAX`, `PERCENTILE_CONT`, `FILTER`. Czas rozpatrywania analizowany jest wyłącznie dla reklamacji, które mają ustawione `resolved_at`.
 
 15\. Częstotliwość reklamacji w relacji do liczby zamówień
 
-Porównanie firm cateringowych pod kątem częstości występowania reklamacji. Dla każdej firmy należy obliczyć liczbę zamówień, liczbę zamówień, których dotyczyła przynajmniej jedna reklamacja, oraz procent zamówień objętych reklamacją. Analizę można wykonać w podziale na miesiące, aby wykryć okresy pogorszenia jakości obsługi.
+Porównanie firm cateringowych pod kątem częstości występowania reklamacji. Firma jest przypisana do zamówienia przez okno dostawy (`DeliveryWindow`). Dla każdej firmy podawana jest liczba zamówień, liczba zamówień z co najmniej jedną reklamacją, łączna liczba reklamacji i procent zamówień objętych reklamacją. Wynik jest rozbity na miesiące utworzenia zamówienia (`YYYY-MM`) i uzupełniony wierszem zbiorczym firmy (`row_scope = 'total'`, `month IS NULL`). Wiersz zbiorczy jest liczony z danych źródłowych, a nie jako średnia z miesięcy.
 
-Agregacje: `COUNT(DISTINCT)`, `COUNT`, `FILTER`. Istotne jest liczenie unikalnych zamówień z reklamacją, a nie samych zgłoszeń, ponieważ jedno zamówienie może mieć więcej niż jedną reklamację.
+Agregacje: `COUNT`, `SUM`, `FILTER`, `GROUPING SETS`. Istotne jest liczenie unikalnych zamówień z reklamacją, a nie samych zgłoszeń. `LEFT JOIN` do reklamacji powiela zamówienie, które ma ich kilka, więc dane są najpierw grupowane po zamówieniu (`GROUP BY o.id`, `COUNT(c.id)`), a dopiero potem agregowane do firm i miesięcy.
 
 16\. Rozkład ocen firm cateringowych i ich wiarygodność statystyczna
 
-Porównanie firm na podstawie widocznych opinii klientów. Oprócz średniej oceny należy przedstawić medianę, odchylenie standardowe, liczbę opinii oraz liczbę ocen z poszczególnych przedziałów. Warto wskazać firmy, które mają wysoką średnią, ale niewielką liczbę opinii, oraz firmy o bardziej stabilnym rozkładzie ocen.
+Porównanie firm na podstawie widocznych opinii klientów (`moderation_status = 'VISIBLE'`). Oprócz średniej oceny podawane są: mediana, odchylenie standardowe z próby, liczba opinii i liczba ocen z poszczególnych przedziałów (1–5). Ocena ważona (`weighted_rating`) przybliża średnią firmy do średniej globalnej z wagą 10 opinii (`prior_weight`) i według niej sortowany jest ranking. Etykieta `reliability_label` klasyfikuje próbę jako małą (poniżej 100 opinii), umiarkowaną (100–149) lub wystarczającą (150 i więcej). Progi dobrano do liczby opinii w danych (ok. 100–200 na firmę) i są przyjętym założeniem. Flaga `high_rating_low_sample` wskazuje firmy ze średnią powyżej globalnej, ale z liczbą opinii mniejszą niż 10. Firmy bez opinii pozostają w wyniku (0 opinii, pozostałe statystyki `NULL`).
 
-Agregacje: `AVG`, `PERCENTILE_CONT`, `STDDEV_POP`, `COUNT`, `FILTER`. Uwzględnienie liczebności próby pozwala uniknąć bezkrytycznego porównywania średnich opartych na bardzo różnej liczbie opinii.
+Agregacje: `AVG`, `PERCENTILE_CONT`, `STDDEV_SAMP`, `COUNT`, `FILTER`. Opinie są próbą klientów, więc stosowane jest odchylenie z próby (dla firmy z jedną opinią wynosi `NULL`). Uwzględnienie liczebności próby pozwala uniknąć bezkrytycznego porównywania średnich opartych na bardzo różnej liczbie opinii.
 
 17\. Oceny poszczególnych posiłków w opiniach klientów
 
-Ranking posiłków według ocen przypisywanych im w opiniach. Dla każdego posiłku należy przedstawić liczbę opinii, średnią i medianę oceny oraz odchylenie standardowe. Można również porównać wyniki tego samego posiłku pomiędzy firmami, o ile występuje on w ofercie różnych firm.
+Ranking posiłków według ocen z opinii. Wiersz opisuje parę posiłek–firma, dzięki czemu można porównać ten sam posiłek między firmami. Uwzględniane są wyłącznie opinie widoczne i przypisane do konkretnego posiłku (`meal_id IS NOT NULL`). Każdy wiersz zawiera trzy poziomy średnich: (1) tego posiłku u danej firmy, z liczbą opinii, (2) tego posiłku we wszystkich firmach, z liczbą opinii, liczbą firm i pozycją w rankingu (remisy rozstrzyga liczba opinii), (3) wszystkich posiłków danej firmy, z liczbą opinii i liczbą ocenianych posiłków. Pozwala to ocenić posiłek na tle jego wyników u innych firm i na tle pozostałych posiłków tej samej firmy. Mediany i odchylenie standardowe pominięto, bo przy małej liczbie opinii na parę posiłek–firma niewiele wnoszą. Opinie o firmie niepowiązane z posiłkiem nie wchodzą do średniej firmy (ogólna ocena firmy jest w zapytaniu 16).
 
-Agregacje: `COUNT`, `AVG`, `PERCENTILE_CONT`, `STDDEV_POP`. Należy uwzględniać tylko opinie przypisane do konkretnego posiłku i zdecydować, czy analizowane mają być wyłącznie opinie widoczne.
+Agregacje: `COUNT`, `COUNT(DISTINCT)`, `AVG`, `RANK() OVER`.
 
 18\. Analiza kohort klientów i ich aktywności zakupowej
 
