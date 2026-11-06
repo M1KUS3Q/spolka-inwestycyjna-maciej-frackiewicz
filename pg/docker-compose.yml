@@ -13,7 +13,12 @@ services:
     volumes:
       - data:/var/lib/postgresql/data
       - ./createdb.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
-      - ./functions/f0_test.sql:/docker-entrypoint-initdb.d/02-f0_test.sql/:ro
+      - ./functions/f0_test.pgsql:/docker-entrypoint-initdb.d/02-function.sql/:ro
+      - ./functions/f1_meals_without_allergens.pgsql:/docker-entrypoint-initdb.d/03-function.sql/:ro
+      - ./functions/f2_companies_by_code_window.pgsql:/docker-entrypoint-initdb.d/04-function.sql/:ro
+      - ./functions/f3_search_diets.pgsql:/docker-entrypoint-initdb.d/05-function.sql/:ro
+      - ./functions/f4_search_orders.pgsql:/docker-entrypoint-initdb.d/06-function.sql/:ro
+      - ./functions/f5_search_complaints.pgsql:/docker-entrypoint-initdb.d/07-function.sql/:ro
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U catering -d catering"]
       interval: 3s

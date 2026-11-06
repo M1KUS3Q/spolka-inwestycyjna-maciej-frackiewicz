@@ -9,7 +9,7 @@ RETURNS TABLE (
     description TEXT,
     allergens VARCHAR[]
 )
-LANGUAGE plpgsql
+LANGUAGE sql
 AS $$
     SELECT
         meal.id,
