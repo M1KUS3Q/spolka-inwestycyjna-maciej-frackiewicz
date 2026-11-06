@@ -24,12 +24,13 @@ AS $$
         company.verification_status,
 
         ARRAY_AGG(
-            window_.start_time::TEXT || ' - ' || window_.end_time::TEXT
+            DISTINCT
+                window_.start_time::TEXT || ' - ' || window_.end_time::TEXT
             ORDER BY
                 window_.start_time::TEXT || ' - ' || window_.end_time::TEXT
         ),
 
-        COUNT(diet.id)
+        COUNT(DISTINCT diet.id)
     FROM
         "CateringCompany" company
         JOIN "CateringCompanyPostalCode" company_code ON company_code.catering_company_id = company.id
