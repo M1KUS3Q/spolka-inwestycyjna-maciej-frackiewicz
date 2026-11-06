@@ -1,3 +1,5 @@
+-- Example usage:
+-- SELECT * FROM find_companies('00-001', '09:00', '12:00');
 CREATE OR REPLACE FUNCTION find_companies(
     p_postal_code postal_code,
     p_start_time TIME,

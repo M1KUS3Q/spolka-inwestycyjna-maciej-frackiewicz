@@ -1,3 +1,5 @@
+-- Example usage:
+-- SELECT * FROM find_meals_without_allergens(ARRAY['Gluten', 'Laktoza', 'Jaja', 'Soja']::VARCHAR[])
 CREATE OR REPLACE FUNCTION find_meals_without_allergens(
     p_allergens VARCHAR[]
 )
