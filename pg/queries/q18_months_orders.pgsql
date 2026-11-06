@@ -1,16 +1,20 @@
 SELECT
-    EXTRACT(MONTH FROM d.scheduled_date) AS month,
-    COUNT(d.id) AS deliveries_count,
-    COUNT(DISTINCT o.user_id) AS active_clients,
+    EXTRACT(MONTH FROM date.scheduled_date) AS month_,
+    COUNT(date.id) AS deliveries_count,
+    COUNT(DISTINCT order_.user_id) AS active_clients,
     ROUND(
-        COUNT(d.id)::NUMERIC
-        / COUNT(DISTINCT o.user_id),
+        COUNT(date.id)::NUMERIC
+        / COUNT(DISTINCT order_.user_id),
         2
     ) AS avg_deliveries_per_client
-FROM "Delivery" d
-JOIN "Order" o
-    ON o.id = d.order_id
-WHERE d.scheduled_date >= DATE '2025-01-01'
-  AND d.scheduled_date < DATE '2026-01-01'
-GROUP BY EXTRACT(MONTH FROM d.scheduled_date)
-ORDER BY month;
+FROM
+    "Delivery" date
+JOIN
+    "Order" order_ ON order_.id = date.order_id
+WHERE
+    date.scheduled_date >= DATE '2025-01-01'
+    AND date.scheduled_date < DATE '2026-01-01'
+GROUP BY
+    EXTRACT(MONTH FROM date.scheduled_date)
+ORDER BY
+    month_;
