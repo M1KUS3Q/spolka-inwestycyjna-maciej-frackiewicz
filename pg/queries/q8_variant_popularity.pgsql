@@ -3,6 +3,9 @@ SELECT
     diet.name,
     variant.calories,
     variant.base_price_per_day,
+    RANK() OVER (
+        ORDER BY COALESCE(SUM(item.quantity), 0) DESC
+    ) AS popularity_rank,
     COALESCE(SUM(item.quantity), 0) AS total_quantity,
     COUNT(item.id) AS order_item_count,
     COUNT(DISTINCT order_.id) AS order_count,
