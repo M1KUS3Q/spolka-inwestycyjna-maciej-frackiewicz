@@ -1,4 +1,3 @@
--- 16. Rozkład ocen firm cateringowych i ich wiarygodność statystyczna
 
 WITH visible_reviews AS (SELECT r.catering_company_id,
                                 r.rating

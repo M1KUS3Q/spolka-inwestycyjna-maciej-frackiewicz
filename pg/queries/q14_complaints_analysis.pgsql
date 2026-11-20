@@ -1,4 +1,4 @@
--- 14. Analiza reklamacji według przedmiotu i czasu rozpatrywania
+
 WITH complaint_base AS (SELECT c.id,
                                c.subject,
                                c.status,

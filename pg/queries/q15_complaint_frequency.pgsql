@@ -1,5 +1,3 @@
--- 15. Częstotliwość reklamacji w relacji do liczby zamówień
-
 
 WITH order_complaints AS (SELECT o.id                             AS order_id,
                                  dw.catering_company_id,

@@ -1,5 +1,3 @@
--- 17. Oceny poszczególnych posiłków w opiniach klientów
-
 WITH reviewed AS (
     SELECT r.meal_id,
            r.catering_company_id,
