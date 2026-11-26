@@ -19,9 +19,12 @@ Connection string:
 postgresql://catering:catering@localhost:5432/catering
 ```
 
-`createdb.sql` is mounted into the container's init directory, so it is applied
-automatically the first time the data volume is created. The seeder in
-`../seed/` drops and recreates the schema on every run.
+`createdb.sql` and every file in `functions/` are mounted into the container's
+init directory, so they are applied automatically the first time the data
+volume is created. Init scripts do **not** run again on later starts.
+
+The seeder in `../seed/` leaves the schema alone: it truncates every table in
+the `public` schema and refills it. Functions and indexes survive a re-seed.
 
 If port `5432` is already taken, change the host side of the `ports` mapping.
 
@@ -32,12 +35,46 @@ The file naming scheme is `q<number>_<short description>.sql` (numbers 1 to 20) 
 
 ## Running functions
 
-In order to be accessible by the database the functions must be mounted as files in docker. If you want to test run a function, add a line to volumes inside docker-compose:
+Every function is mounted into the container's init directory by a volume in
+`docker-compose.yml`. To add a new one, append a line to `volumes` and give it
+the next free index:
 
 ```
-      - ./functions/<file>:/docker-entrypoint-initdb.d/<index>-<file>/:ro
+      - ./functions/<file>:/docker-entrypoint-initdb.d/<index>-function.sql:ro
 ```
 
-where `index` is a number larger than that of the previous volume.
+Because init scripts only run when the data volume is created, a function
+added later is **not** picked up by restarting the container (`docker compose
+restart` / `up -d` are enough only the first time). Either load it manually
+into the running database:
 
-Currently the above is completely broken because the seeder wipes the functions from the db structure lmao
+```sh
+docker compose exec -T db psql -U catering -d catering \
+  -v ON_ERROR_STOP=1 < functions/f1_meals_without_allergens.pgsql
+```
+
+or recreate the volume with `docker compose down -v && docker compose up -d`,
+which drops all data, so run the seeder afterwards.
+
+Re-seeding does not remove functions — it only truncates data.
+
+Inside the container the mounted files are renamed to `<index>-function.sql`,
+so an already mounted function can be reloaded from an interactive session:
+
+```sh
+docker compose exec db psql -U catering -d catering
+# \i /docker-entrypoint-initdb.d/02-function.sql
+```
+
+Note that a function's SQL name need not match its filename:
+`f1_meals_without_allergens.pgsql` creates `find_meals_without_allergens`.
+Check the definition before calling it.
+
+Test a function (this also works with `EXPLAIN`; for the inner query plan use
+`auto_explain` with `auto_explain.log_nested_statements = on`, since a plain
+`EXPLAIN` on a function call only shows a `Function Scan`):
+
+```sh
+docker compose exec db psql -U catering -d catering -c \
+  "SELECT * FROM find_meals_without_allergens(ARRAY['Jaja','Soja']::VARCHAR[]);"
+```

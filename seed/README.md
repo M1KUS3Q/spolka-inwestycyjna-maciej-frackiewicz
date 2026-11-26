@@ -12,8 +12,12 @@ From this directory (or `uv run seed/seed_database.py` from the repo root):
 uv run seed_database.py
 ```
 
-The script drops and recreates the schema, then fills it with fresh random
-data. It reads `DATABASE_URL` if set and otherwise uses the Compose default:
+The script empties every table in the `public` schema (`TRUNCATE ...
+RESTART IDENTITY CASCADE`) and refills it with fresh random data. It does not
+create or alter the schema: the tables must already exist, which happens
+automatically from `../pg/createdb.sql` when the data volume is first created.
+Functions and indexes are left untouched. The script reads `DATABASE_URL` if
+set and otherwise uses the Compose default:
 
 ```
 postgresql://catering:catering@localhost:5432/catering
