@@ -16,7 +16,6 @@ CREATE INDEX idx_ccpc_postal             ON "CateringCompanyPostalCode"(postal_c
 CREATE INDEX idx_window_company          ON "DeliveryWindow"(catering_company_id);
 CREATE INDEX idx_mealmealtime_mealtime   ON "MealMealtime"(mealtime_id, meal_id);          -- search_meals, raport 11
 CREATE INDEX idx_mealingredient_ing      ON "MealIngredient"(ingredient_id, meal_id);      -- raport 22
-CREATE INDEX idx_mealallergen_allergen   ON "MealAllergen"(allergen_id, meal_id);          -- raport 21
 CREATE INDEX idx_planitem_meal           ON "PlanItem"(meal_id, daily_plan_id);            -- raport 23
 CREATE INDEX idx_deliverydp_plan         ON "DeliveryDailyPlan"(daily_plan_id, delivery_id);
 CREATE INDEX idx_billing_billingdata     ON "Billing"(billing_data_id)

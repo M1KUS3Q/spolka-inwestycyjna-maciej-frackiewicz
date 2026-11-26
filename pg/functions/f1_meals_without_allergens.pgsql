@@ -1,5 +1,5 @@
 -- Example usage:
--- SELECT * FROM find_meals_without_allergens(ARRAY['Gluten', 'Laktoza', 'Jaja', 'Soja']::VARCHAR[])
+-- SELECT * FROM find_meals_without_allergens(ARRAY['Soja']::VARCHAR[])
 CREATE OR REPLACE FUNCTION find_meals_without_allergens(
     p_allergens VARCHAR[]
 )
@@ -10,36 +10,28 @@ RETURNS TABLE (
     allergens VARCHAR[]
 )
 LANGUAGE sql
+STABLE
 AS $$
     SELECT
         meal.id,
         meal.name,
         meal.description,
         COALESCE(
-            (
-                SELECT
-                    ARRAY_AGG(allergen.name ORDER BY allergen.name)
-                FROM
-                    "MealAllergen" meal_allergen
-                    JOIN "Allergen" allergen ON allergen.id = meal_allergen.allergen_id
-                WHERE
-                    meal_allergen.meal_id = meal.id
-            ),
+            array_agg(a.name ORDER BY a.name) FILTER (WHERE a.id IS NOT NULL),
             ARRAY[]::VARCHAR[]
         )
     FROM
         "Meal" meal
+        LEFT JOIN "MealAllergen" ma ON ma.meal_id = meal.id
+        LEFT JOIN "Allergen" a ON a.id = ma.allergen_id
     WHERE
         NOT EXISTS (
-            SELECT
-                1
-            FROM
-                "MealAllergen" meal_allergen
-                JOIN "Allergen" allergen ON allergen.id = meal_allergen.allergen_id
-            WHERE
-                meal_allergen.meal_id = meal.id
-                AND allergen.name = ANY(p_allergens)
+            SELECT 1
+            FROM "MealAllergen" ma2
+            JOIN "Allergen" a2 ON a2.id = ma2.allergen_id
+            WHERE ma2.meal_id = meal.id
+              AND a2.name = ANY(p_allergens)
         )
+    GROUP BY meal.id
     ORDER BY meal.name;
 $$;
-

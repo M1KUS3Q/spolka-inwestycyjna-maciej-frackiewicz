@@ -39,7 +39,7 @@ DEMO_PASSWORD = "Zaq12wsx!"
 SALT = "0123456789abcdef0123456789abcdef"
 POSTAL_COUNT = 350
 COMPANY_COUNT = 40
-MEAL_COUNT = 400
+MEAL_COUNT = 100_000
 USER_COUNT = 4000
 ORDER_COUNT = 12_000
 REVIEW_COUNT = 4_500
@@ -218,17 +218,21 @@ def seed() -> None:
         for mealtime in MEALTIMES:
             styles = [s for s in MEAL_STYLES if s["mealtime"] == mealtime["name"]]
             for _ in range(meals_per_mealtime):
-                while True:
-                    style = random.choice(styles)
-                    chosen = []
-                    for category in style["categories"].split(";"):
-                        options = [name for name in INGREDIENTS_BY_CATEGORY[category]
-                                   if name not in chosen]
-                        chosen.append(random.choice(options))
-                    name = f'{style["style"]}: ' + ", ".join(chosen[:-1]) + f" i {chosen[-1]}"
-                    if name not in meal_names:
-                        meal_names.add(name)
-                        break
+                style = random.choice(styles)
+                chosen = []
+                for category in style["categories"].split(";"):
+                    options = [name for name in INGREDIENTS_BY_CATEGORY[category]
+                               if name not in chosen]
+                    chosen.append(random.choice(options))
+                base_name = f'{style["style"]}: ' + ", ".join(chosen[:-1]) + f" i {chosen[-1]}"
+                # The number of ingredient combinations per style is finite, so for
+                # MEAL_COUNT in the tens of thousands names repeat. Disambiguate with
+                # a suffix instead of retrying forever once a style is exhausted.
+                name, suffix = base_name, 1
+                while name in meal_names:
+                    suffix += 1
+                    name = f"{base_name} ({suffix})"
+                meal_names.add(name)
                 protein = round(random.uniform(8, 45), 1)
                 fat = round(random.uniform(5, 35), 1)
                 carbs = round(random.uniform(10, 75), 1)

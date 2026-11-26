@@ -260,6 +260,10 @@ CREATE TABLE "MealAllergen" (
         ON DELETE RESTRICT
 );
 
+-- The PK above indexes meal_id first, so "which meals contain allergen X"
+-- (the NOT EXISTS lookup in find_meals_without_allergens) cannot use it.
+CREATE INDEX idx_mealallergen_allergen_id ON "MealAllergen" (allergen_id, meal_id);
+
 --orders, day plans etc....
 
 CREATE TABLE "Order" (
