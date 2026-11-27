@@ -447,3 +447,12 @@ CREATE INDEX IF NOT EXISTS idx_delivery_status_order ON "Delivery" (status, orde
 
 -- index for q1
 CREATE INDEX IF NOT EXISTS idx_delivery_order_status ON "Delivery" (order_id, status);
+
+-- indexes for f5
+CREATE EXTENSION IF NOT EXISTS pg_trgm;
+
+CREATE INDEX IF NOT EXISTS idx_complaint_subject_trgm
+    ON "Complaint" USING gin (lower(subject) gin_trgm_ops);
+
+CREATE INDEX IF NOT EXISTS idx_complaint_desc_trgm
+    ON "Complaint" USING gin (lower(description) gin_trgm_ops);
