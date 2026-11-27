@@ -440,3 +440,7 @@ CREATE TABLE "Complaint" (
         ON UPDATE CASCADE
         ON DELETE SET NULL
 );
+
+-- indexes for f4
+CREATE INDEX IF NOT EXISTS idx_complaint_order ON "Complaint" (order_id);
+CREATE INDEX IF NOT EXISTS idx_delivery_status_order ON "Delivery" (status, order_id);
