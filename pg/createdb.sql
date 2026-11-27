@@ -444,3 +444,6 @@ CREATE TABLE "Complaint" (
 -- indexes for f4
 CREATE INDEX IF NOT EXISTS idx_complaint_order ON "Complaint" (order_id);
 CREATE INDEX IF NOT EXISTS idx_delivery_status_order ON "Delivery" (status, order_id);
+
+-- index for q1
+CREATE INDEX IF NOT EXISTS idx_delivery_order_status ON "Delivery" (order_id, status);
